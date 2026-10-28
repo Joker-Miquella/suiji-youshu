@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="导入 Excel 十位编号，转盘公平抽签，支持不重复抽取、单步撤销和本地保存。"><title>随机有数 · 转盘抽签</title><link rel="stylesheet" href="style.css"><script defer src="vendor/xlsx.full.min.js"></script><script defer src="core.js"></script><script defer src="app.js"></script></head>
+<body>
+<header><a class="brand" href="./" aria-label="随机有数首页"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#e5e0ff" stroke="#5259db" stroke-width="2"/><path d="M20 3V37M3 20H37M8 8L32 32M8 32L32 8" stroke="white" stroke-width="2"/><path d="M20 3L24 12H16Z" fill="#5259db"/></svg>随机有数</a><div class="toolbar"><button id="undo" class="small secondary" disabled><svg viewBox="0 0 24 24"><path d="M9 5L4 10L9 15M4 10H15A5 5 0 0 1 15 20"/></svg>撤销一步</button><button id="save" class="small primary" disabled><svg viewBox="0 0 24 24"><path d="M5 3H17L21 7V21H3V3ZM7 3V9H17V3M7 21V14H17V21"/></svg>保存进度</button></div></header>
+<main>
+<aside class="controls">
+<h1>把选择交给随机</h1><p class="intro">导入名单，开启公平的每一次抽签。</p>
+<button class="upload" id="upload"><svg viewBox="0 0 40 40"><path d="M24 4H10V36H32V12ZM24 4V12H32M20 29V17M14 23L20 17L26 23"/></svg><strong>导入 Excel 名单</strong><span>.xlsx / .xls / .csv · 10 位编号</span></button><input id="file" type="file" accept=".xlsx,.xls,.csv" hidden>
+<p class="demo-line">也可以先体验<button id="demo" class="text-button">示例名单</button>。</p><p id="filename" class="filename" hidden></p>
+<div class="stats"><div><span>总人数</span><b id="total">0</b></div><div><span>待抽取</span><b id="remaining">0</b></div><div><span>已抽取</span><b id="drawn">0</b></div></div>
+<button class="primary draw" id="draw" disabled><svg viewBox="0 0 24 24"><path d="M8 4L20 12L8 20Z" fill="currentColor" stroke="none"/></svg><span>开始抽签</span></button><p class="draw-help">每轮至少 5 秒 · 每个编号只抽一次</p>
+<div class="history-title"><h2>抽签记录</h2><span id="history-count"></span></div><div id="history" class="history"><div class="empty-history"><svg viewBox="0 0 40 40"><rect x="7" y="3" width="26" height="34" rx="4"/><path d="M13 13H27M13 20H27M13 27H22"/></svg><p>抽签结果将显示在这里。</p></div></div>
+</aside>
+<section class="stage" aria-label="抽签转盘"><div class="wheel-wrap"><div class="pointer" aria-hidden="true"></div><canvas id="wheel" width="1200" height="1200" aria-label="尚未导入名单"></canvas><div class="wheel-center"><span>随机有数</span><small id="wheel-sub">等待导入</small></div></div><div class="display"><span id="display-label">当前编号</span><output id="number" aria-live="off">──────────</output><span id="phase" role="status" aria-live="polite">导入名单后开始</span></div><p class="privacy"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11V17M12 7V8"/></svg>名单仅在当前浏览器中处理，保存后可继续抽签。</p><p id="save-status" class="save-status">尚未保存 · 保存仅限当前设备、当前浏览器</p><button id="restore" class="text-button restore" hidden>恢复已保存进度</button></section>
+</main>
+<div id="toast" class="toast" role="status" hidden></div>
+<dialog id="import-dialog"><form method="dialog"><div class="dialog-heading"><h2>确认导入名单</h2><button class="close" aria-label="关闭导入窗口" value="cancel">×</button></div><p>选择编号所在的工作表和列。仅导入 10 位数字，自动去重。</p><div class="fields"><label>工作表<select id="sheet"></select></label><label>编号列<select id="column"></select></label></div><div id="import-summary" class="import-summary"></div><div id="import-preview" class="import-preview"></div><p id="replace-warning">导入后将开始新的抽签，替换当前名单和记录。已保存的进度会在下次保存时更新。</p><div class="dialog-actions"><button value="cancel" class="secondary">取消</button><button id="confirm-import" type="button" class="primary">确认导入</button></div></form></dialog>
+<dialog id="replace-dialog"><form method="dialog"><h2>使用示例名单？</h2><p>这会替换当前名单和抽签记录，载入 30 个示例编号。</p><div class="dialog-actions"><button value="cancel" class="secondary">取消</button><button value="confirm" class="primary">使用示例</button></div></form></dialog>
+<dialog id="restore-dialog"><form method="dialog"><h2>恢复已保存进度？</h2><p>当前页面的名单和记录将被上次保存的进度替换。</p><div class="dialog-actions"><button value="cancel" class="secondary">取消</button><button value="confirm" class="primary">恢复进度</button></div></form></dialog>
+</body></html>
